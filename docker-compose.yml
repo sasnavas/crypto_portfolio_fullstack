@@ -1,0 +1,30 @@
+services:
+  # 1. Database PostgreSQL
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: S3rg1024!
+      POSTGRES_DB: crypto_db
+    ports:
+      - "5432:5432"
+
+  # 2. Backend de Spring Boot
+  backend:
+    build: ./crypto-backend
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/crypto_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=S3rg1024!
+    depends_on:
+      - db
+
+  # 3. Frontend de Angular
+  frontend:
+    build: ./crypto-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
